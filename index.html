@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>楽天おすすめ商品まとめ</title>
+  <meta name="description" content="楽天で買えるおすすめ商品をカテゴリ別に紹介します。" />
+  <style>
+    :root{
+      --bg:#0b0f19; --card:#121a2b; --text:#e8eefc; --muted:#a9b6d3;
+      --accent:#6aa8ff; --line:rgba(255,255,255,.10);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", sans-serif;
+      background:linear-gradient(180deg, #0b0f19, #070a12); color:var(--text);
+    }
+    a{color:inherit}
+    header{
+      padding:28px 16px 16px; border-bottom:1px solid var(--line);
+      background:rgba(18,26,43,.35); backdrop-filter: blur(6px);
+      position:sticky; top:0; z-index:10;
+    }
+    .wrap{max-width:1100px; margin:0 auto}
+    .top{
+      display:flex; gap:16px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+    }
+    h1{font-size:22px; margin:0 0 6px}
+    .lead{margin:0; color:var(--muted); font-size:14px; line-height:1.6}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 10px;
+      border:1px solid var(--line); border-radius:999px; color:var(--muted); font-size:12px;
+      background:rgba(18,26,43,.6);
+    }
+    main{padding:18px 16px 60px}
+    .toolbar{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      margin:14px 0 18px;
+    }
+    .search{
+      flex:1; min-width:240px;
+      display:flex; gap:10px; align-items:center;
+      border:1px solid var(--line); border-radius:14px; padding:10px 12px;
+      background:rgba(18,26,43,.6);
+    }
+    .search input{
+      width:100%; border:0; outline:0; background:transparent; color:var(--text); font-size:14px;
+    }
+    .filters{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{
+      border:1px solid var(--line); color:var(--muted); background:rgba(18,26,43,.6);
+      padding:8px 10px; border-radius:999px; font-size:12px; cursor:pointer;
+      user-select:none;
+    }
+    .chip.active{border-color:rgba(106,168,255,.7); color:var(--text)}
+    .grid{
+      display:grid; gap:14px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .card{
+      grid-column: span 12;
+      border:1px solid var(--line); border-radius:18px; overflow:hidden;
+      background:linear-gradient(180deg, rgba(18,26,43,.9), rgba(18,26,43,.55));
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      display:flex; gap:12px;
+    }
+    @media (min-width:720px){ .card{grid-column: span 6;} }
+    @media (min-width:1020px){ .card{grid-column: span 4;} }
+
+    .thumb{
+      width:110px; min-width:110px; height:110px;
+      background:rgba(255,255,255,.06);
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; color:var(--muted);
+    }
+    .thumb img{width:100%; height:100%; object-fit:cover}
+    .content{padding:12px 12px 12px 0; flex:1}
+    .meta{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:6px}
+    .tag{
+      font-size:11px; color:var(--muted);
+      border:1px solid var(--line); border-radius:999px; padding:4px 8px;
+      background:rgba(0,0,0,.12);
+    }
+    .name{margin:0 0 6px; font-size:15px; line-height:1.35}
+    .desc{margin:0 0 10px; color:var(--muted); font-size:13px; line-height:1.6}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:9px 12px; border-radius:12px; text-decoration:none;
+      border:1px solid rgba(106,168,255,.35);
+      background:rgba(106,168,255,.14);
+      font-size:13px;
+    }
+    .btn:hover{background:rgba(106,168,255,.22)}
+    .subbtn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:9px 12px; border-radius:12px; text-decoration:none;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--muted); font-size:13px;
+    }
+    .price{margin-left:auto; font-size:12px; color:var(--muted)}
+    footer{
+      border-top:1px solid var(--line); padding:18px 16px; color:var(--muted); font-size:12px;
+    }
+    .note{
+      border:1px solid var(--line); border-radius:14px; padding:12px; background:rgba(18,26,43,.6);
+      margin:14px 0 0; line-height:1.7;
+    }
+    .small{font-size:12px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap top">
+      <div>
+        <h1>楽天おすすめ商品まとめ</h1>
+        <p class="lead">
+          カテゴリ別に「買ってよかった・評判が良い」商品を紹介します。気になるものは楽天で詳細をチェックしてください。
+        </p>
+        <div class="note small" style="margin-top:10px">
+          <b>広告表示について：</b>本ページにはアフィリエイトリンク（広告）が含まれます。購入により紹介者に報酬が発生する場合があります。
+        </div>
+      </div>
+      <div class="badge" title="更新日">
+        🗓️ <span id="updated"></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="toolbar">
+      <div class="search">
+        🔎 <input id="q" type="search" placeholder="商品名・キーワードで検索（例：サバ、モバイル、洗剤）" />
+      </div>
+      <div class="filters" id="filters"></div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="note">
+      <b>使い方（編集ポイント）</b><br />
+      1) このページ下部の <code>products</code> の中身を、あなたが紹介したい商品に置き換えるだけでOK。<br />
+      2) <code>rakutenUrl</code> は楽天アフィリエイトで作成したリンクに差し替えてください。<br />
+      3) 画像は <code>imageUrl</code> にURLを入れるか、空のままでも動きます。
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div>© <span id="year"></span> Rakuten Picks / 個人の感想であり効果を保証するものではありません。</div>
+      <div style="margin-top:6px">※価格・在庫・ポイントは変動します。購入前に楽天の商品ページで最新情報をご確認ください。</div>
+    </div>
+  </footer>
+
+  <script>
+    // ✅ ここを編集すれば、サイトの中身が完成します（商品データ）
+    const products = [
+      {
+        id: "saba",
+        name: "骨取りサバ（冷凍・大容量）",
+        category: "食品",
+        tags: ["時短", "冷凍", "レビュー多め"],
+        description: "骨取りで調理がラク。冷凍庫に常備しやすい定番。",
+        priceNote: "（価格は商品ページで確認）",
+        imageUrl: "",
+        rakutenUrl: "https://example.com/your-rakuten-affiliate-link",
+        noteUrl: ""
+      },
+      {
+        id: "detergent",
+        name: "洗濯洗剤（詰め替え・大容量）",
+        category: "日用品",
+        tags: ["消耗品", "まとめ買い"],
+        description: "定期的に必要になる消耗品は成約しやすい傾向。",
+        priceNote: "（セール時が狙い目）",
+        imageUrl: "",
+        rakutenUrl: "https://example.com/your-rakuten-affiliate-link",
+        noteUrl: ""
+      },
+      {
+        id: "mobile-battery",
+        name: "モバイルバッテリー（軽量タイプ）",
+        category: "ガジェット",
+        tags: ["持ち運び", "通学/通勤"],
+        description: "用途が明確で比較記事とも相性が良い。",
+        priceNote: "",
+        imageUrl: "",
+        rakutenUrl: "https://example.com/your-rakuten-affiliate-link",
+        noteUrl: ""
+      }
+    ];
+
+    // --- UI ---
+    const elGrid = document.getElementById("grid");
+    const elQ = document.getElementById("q");
+    const elFilters = document.getElementById("filters");
+
+    const categories = ["すべて", ...Array.from(new Set(products.map(p => p.category)))];
+    let activeCategory = "すべて";
+
+    function renderFilters(){
+      elFilters.innerHTML = "";
+      categories.forEach(cat => {
+        const chip = document.createElement("div");
+        chip.className = "chip" + (cat === activeCategory ? " active" : "");
+        chip.textContent = cat;
+        chip.onclick = () => { activeCategory = cat; renderFilters(); render(); };
+        elFilters.appendChild(chip);
+      });
+    }
+
+    function matches(p, q){
+      if (!q) return true;
+      const hay = (p.name + " " + p.description + " " + p.tags.join(" ")).toLowerCase();
+      return hay.includes(q.toLowerCase());
+    }
+
+    function render(){
+      const q = elQ.value.trim();
+      const list = products.filter(p =>
+        (activeCategory === "すべて" || p.category === activeCategory) && matches(p, q)
+      );
+
+      elGrid.innerHTML = "";
+      if (list.length === 0){
+        elGrid.innerHTML = `<div class="note">該当する商品がありません。検索語やカテゴリを変えてみてください。</div>`;
+        return;
+      }
+
+      list.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const thumb = document.createElement("div");
+        thumb.className = "thumb";
+        if (p.imageUrl){
+          const img = document.createElement("img");
+          img.src = p.imageUrl;
+          img.alt = p.name;
+          img.loading = "lazy";
+          thumb.appendChild(img);
+        } else {
+          thumb.textContent = "画像なし";
+        }
+
+        const content = document.createElement("div");
+        content.className = "content";
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        const cat = document.createElement("span");
+        cat.className = "tag";
+        cat.textContent = p.category;
+        meta.appendChild(cat);
+        p.tags.forEach(t => {
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = t;
+          meta.appendChild(tag);
+        });
+
+        const name = document.createElement("p");
+        name.className = "name";
+        name.textContent = p.name;
+
+        const desc = document.createElement("p");
+        desc.className = "desc";
+        desc.textContent = p.description;
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        const btn = document.createElement("a");
+        btn.className = "btn";
+        btn.href = p.rakutenUrl;
+        btn.target = "_blank";
+        btn.rel = "nofollow sponsored noopener";
+        btn.textContent = "楽天で見る（広告）";
+
+        actions.appendChild(btn);
+
+        if (p.noteUrl){
+          const sub = document.createElement("a");
+          sub.className = "subbtn";
+          sub.href = p.noteUrl;
+          sub.target = "_blank";
+          sub.rel = "noopener";
+          sub.textContent = "詳しい紹介";
+          actions.appendChild(sub);
+        }
+
+        const price = document.createElement("span");
+        price.className = "price";
+        price.textContent = p.priceNote || "";
+        actions.appendChild(price);
+
+        content.appendChild(meta);
+        content.appendChild(name);
+        content.appendChild(desc);
+        content.appendChild(actions);
+
+        card.appendChild(thumb);
+        card.appendChild(content);
+
+        elGrid.appendChild(card);
+      });
+    }
+
+    elQ.addEventListener("input", render);
+
+    // footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("updated").textContent =
+      new Date().toLocaleDateString("ja-JP", { year:"numeric", month:"long", day:"numeric" });
+
+    renderFilters();
+    render();
+  </script>
+</body>
+</html>
