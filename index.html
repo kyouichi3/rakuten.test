@@ -3,95 +3,73 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>おすすめまとめ</title>
-  <meta name="description" content="おすすめ商品をジャンル別に紹介します。" />
-
-  <!-- テーマ・SEO（site.jsonからJSで差し替え） -->
-  <meta name="theme-color" content="#6aa8ff" />
-
+  <title id="docTitle">ランキング</title>
+  <meta name="description" content="おすすめ商品をランキング形式で紹介します。" />
   <link rel="stylesheet" href="./assets/styles.css" />
 </head>
 <body>
-  <header class="site-header">
+  <header class="header">
     <div class="wrap header-inner">
       <div class="brand">
-        <a class="brand-link" href="./" aria-label="トップへ">
-          <span class="brand-logo" aria-hidden="true">★</span>
-          <span class="brand-title" id="siteTitle">おすすめまとめ</span>
-        </a>
-        <p class="brand-sub" id="siteDescription">おすすめをカテゴリ別に紹介します。</p>
+        <div class="site-title" id="siteTitle">おすすめランキング</div>
+        <div class="site-sub" id="siteSubtitle">ジャンル別に厳選して紹介します。</div>
       </div>
 
-      <div class="header-actions">
-        <a class="btn ghost" id="aboutLink" href="#about">このサイトについて</a>
-        <span class="badge" title="更新日">🗓️ <span id="updated"></span></span>
+      <div class="header-meta">
+        <div class="badge">🗓️ <span id="updated"></span></div>
+        <a class="btn ghost" href="#ranking">ランキングへ</a>
       </div>
     </div>
   </header>
 
   <main class="wrap">
-    <section class="toolbar" aria-label="検索と絞り込み">
-      <div class="search">
-        🔎 <input id="q" type="search" placeholder="検索（例：軽量、時短、充電器）" />
-      </div>
+    <!-- 0. 上部注意書き（広告表記） -->
+    <section class="notice" id="disclosureBox">
+      <b>広告表示：</b><span id="disclosureText">本ページにはアフィリエイト広告が含まれています。</span>
+    </section>
 
-      <div class="controls">
-        <select id="category" aria-label="カテゴリ"></select>
-        <select id="sort" aria-label="並び替え">
-          <option value="recommended">おすすめ順</option>
-          <option value="newest">新着順</option>
-          <option value="popular">人気順</option>
-          <option value="priceAsc">価格：安い順</option>
-          <option value="priceDesc">価格：高い順</option>
-        </select>
+    <!-- 1. 目次 -->
+    <section class="section" id="toc">
+      <h2 class="h2">目次</h2>
+      <ol class="toc" id="tocList"></ol>
+    </section>
+
+    <!-- 2. ガイド -->
+    <section class="section" id="guide">
+      <h2 class="h2" id="guideTitle">このジャンルの選び方・違い</h2>
+      <div class="card">
+        <div class="prose" id="guideBody"></div>
       </div>
     </section>
 
-    <section class="tagbar" aria-label="タグで絞り込み">
-      <div class="tagbar-head">
-        <span class="muted small">タグ：</span>
-        <button class="chip active" id="tagAll" type="button">すべて</button>
-      </div>
-      <div class="tagbar-list" id="tagList"></div>
+    <!-- 3. ランキング -->
+    <section class="section" id="ranking">
+      <h2 class="h2" id="rankingTitle">ランキング</h2>
+      <div class="muted small" id="rankingNote"></div>
+      <div class="rank-list" id="rankList"></div>
     </section>
 
-    <section class="summary" aria-label="概要">
-      <div class="summary-card">
-        <div class="summary-title">今日のおすすめ</div>
-        <div class="summary-text" id="summaryText">読み込み中…</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-title">人気のカテゴリ</div>
-        <div class="summary-text" id="summaryCats">読み込み中…</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-title">運用メモ</div>
-        <div class="summary-text small muted">
-          追加・編集は <code>data/products.json</code> だけでOK。<br />
-          サイト名・色は <code>data/site.json</code> を編集。
-        </div>
+    <!-- 4. 話題（記事） -->
+    <section class="section" id="topics">
+      <h2 class="h2" id="topicsTitle">このジャンルでよくある疑問・話題</h2>
+      <div class="topics" id="topicsList"></div>
+    </section>
+
+    <!-- 5. 他サイト導線 -->
+    <section class="section" id="links">
+      <h2 class="h2" id="linksTitle">他ジャンルのおすすめ</h2>
+      <div class="card">
+        <ul class="links" id="linksList"></ul>
       </div>
     </section>
 
-    <section class="grid" id="grid" aria-live="polite"></section>
-
-    <section class="note" id="about">
-      <h2 class="h2">このサイトについて</h2>
-      <p class="muted" id="affiliateDisclosure">
-        本サイトにはアフィリエイト広告が含まれています。購入により紹介者に報酬が発生する場合があります。
-      </p>
-      <p class="muted small" id="siteFooterNote">
+    <footer class="footer">
+      <div class="muted small" id="footerNote">
         価格・在庫・ポイントは変動します。購入前にリンク先で最新情報をご確認ください。
-      </p>
-    </section>
+      </div>
+      <div class="muted small">© <span id="year"></span> <span id="siteTitle2">おすすめランキング</span></div>
+    </footer>
   </main>
-
-  <footer class="site-footer">
-    <div class="wrap footer-inner">
-      <span class="muted small">© <span id="year"></span> <span id="siteTitle2">おすすめまとめ</span></span>
-      <span class="muted small">/ <a class="muted" href="#about">表記</a></span>
-    </div>
-  </footer>
 
   <script src="./assets/app.js" defer></script>
 </body>
