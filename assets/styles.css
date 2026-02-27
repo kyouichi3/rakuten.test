@@ -4,7 +4,7 @@
   --text:#1f2937;
   --muted:#6b7280;
   --line:#e5e7eb;
-  --accent:#2563eb;      /* ボタンだけ */
+  --accent:#2563eb;
   --accentSoft:#eff6ff;
   --shadow:0 4px 14px rgba(0,0,0,.06);
   --radius:14px;
@@ -87,7 +87,6 @@ a:hover{text-decoration:underline}
 
 .rank-list{display:flex; flex-direction:column; gap:12px; margin-top:12px}
 
-/* ランキングカード */
 .rank{
   background:#fff;
   border:1px solid var(--line);
@@ -146,7 +145,6 @@ a:hover{text-decoration:underline}
   margin-left:auto; color:var(--muted); font-size:12px;
 }
 
-/* 話題（記事カード） */
 .topics{display:flex; flex-direction:column; gap:12px}
 .topic{
   background:#fff;
@@ -159,7 +157,6 @@ a:hover{text-decoration:underline}
 .topic .body{color:var(--text); line-height:1.9}
 .topic .body p{margin:0 0 10px}
 
-/* 他サイトリンク */
 .links{margin:0; padding-left:18px; line-height:1.9}
 .links li{margin:6px 0}
 
