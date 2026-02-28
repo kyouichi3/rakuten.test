@@ -19,7 +19,6 @@ body{
 }
 a{color:inherit; text-decoration:none}
 a:hover{text-decoration:underline}
-
 .wrap{max-width:1040px; margin:0 auto; padding:0 16px}
 
 /* Header */
@@ -187,7 +186,6 @@ th,td{
   vertical-align:top;
 }
 th{background:#fafafa; font-weight:900}
-td .muted{font-size:12px}
 
 /* Ranking cards */
 .rank-list{display:flex; flex-direction:column; gap:12px; margin-top:12px}
