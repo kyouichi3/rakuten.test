@@ -3,17 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title id="docTitle">ゲーミングマウスおすすめランキング</title>
-  <meta name="description" content="ゲーミングマウスをランキング形式で紹介します。" />
+  <title id="docTitle">ゲーミングマウスおすすめランキング（テスト）</title>
+  <meta name="description" content="ゲーミングマウスの選び方と、ランキング形式のおすすめモデルを紹介します（テスト）。" />
   <link rel="stylesheet" href="./assets/styles.css" />
 </head>
 <body>
   <header class="header">
     <div class="wrap header-inner">
-      <div class="brand">
-        <div class="site-title" id="siteTitle">ゲーミングマウスおすすめランキング（テスト）</div>
-        <div class="site-sub" id="siteSubtitle">軽さ・形状・価格の違いが分かるようにまとめます。</div>
-      </div>
+      <a class="brand" href="./">
+        <div class="logo">⌁</div>
+        <div class="brand-text">
+          <div class="site-title" id="siteTitle">ゲーミングマウスおすすめ（テスト）</div>
+          <div class="site-sub" id="siteSubtitle">ランキング形式で、違いが分かるように整理します。</div>
+        </div>
+      </a>
 
       <div class="header-meta">
         <div class="badge">🗓️ <span id="updated"></span></div>
@@ -23,51 +26,113 @@
   </header>
 
   <main class="wrap">
-    <!-- 広告表記 -->
-    <section class="notice" id="disclosureBox">
-      <b>広告表示：</b><span id="disclosureText">本ページにはアフィリエイト広告が含まれています（テスト）。</span>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-main">
+        <h1 class="h1" id="heroTitle">ゲーミングマウスおすすめランキング（テスト）</h1>
+        <p class="hero-lead" id="heroLead">
+          「形状・重さ・センサー/遅延・価格」を軸に、ランキング形式で紹介します。URL/画像はテストのためメモでOKです。
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn" href="#quickpicks">トップピックを見る</a>
+          <a class="btn ghost" href="#guide">選び方を先に読む</a>
+        </div>
+
+        <div class="notice" id="disclosureBox">
+          <b>広告表示：</b><span id="disclosureText">本ページにはアフィリエイト広告が含まれています（テスト）。</span>
+        </div>
+
+        <div class="mini-muted" id="updateNote">※価格・在庫は変動します。購入前にリンク先で最新情報をご確認ください。</div>
+      </div>
+
+      <aside class="hero-side">
+        <div class="card">
+          <div class="card-title">このページで分かること</div>
+          <ul class="check">
+            <li>失敗しにくい選び方（短く）</li>
+            <li>Top 3 の違い（軽さ/形状/価格）</li>
+            <li>よくある疑問（プロの傾向）</li>
+          </ul>
+        </div>
+
+        <div class="card subtle">
+          <div class="card-title">テスト用メモ</div>
+          <div class="mini-muted">
+            実運用では、各商品の「公式/ECリンク」を buyUrl に入れます。画像は許諾のある素材のみ。
+          </div>
+        </div>
+      </aside>
     </section>
 
-    <!-- 1. 目次 -->
+    <!-- 目次 -->
     <section class="section" id="toc">
       <h2 class="h2">目次</h2>
       <ol class="toc" id="tocList"></ol>
     </section>
 
-    <!-- 2. ガイド -->
+    <!-- Top Picks（上部に短い一覧） -->
+    <section class="section" id="quickpicks">
+      <div class="section-head">
+        <h2 class="h2">Top Picks（まずは結論）</h2>
+        <div class="muted small">ランキング上位を1分で把握できます。</div>
+      </div>
+      <div class="picks" id="pickCards"></div>
+    </section>
+
+    <!-- 比較表（軸だけ見せる） -->
+    <section class="section" id="compare">
+      <div class="section-head">
+        <h2 class="h2">比較表（ざっくり）</h2>
+        <div class="muted small">細かい数値より「違い」を早く理解するための表です（テスト）。</div>
+      </div>
+      <div class="table-wrap" id="compareTable"></div>
+    </section>
+
+    <!-- 選び方 -->
     <section class="section" id="guide">
-      <h2 class="h2" id="guideTitle">ゲーミングマウスの選び方・違い</h2>
+      <div class="section-head">
+        <h2 class="h2" id="guideTitle">ゲーミングマウスの選び方・違い</h2>
+        <div class="muted small">約400字</div>
+      </div>
       <div class="card">
         <div class="prose" id="guideBody"></div>
       </div>
     </section>
 
-    <!-- 3. ランキング -->
+    <!-- ランキング本体 -->
     <section class="section" id="ranking">
-      <h2 class="h2" id="rankingTitle">ゲーミングマウス ランキング（テスト）</h2>
-      <div class="muted small" id="rankingNote"></div>
+      <div class="section-head">
+        <h2 class="h2" id="rankingTitle">ランキング</h2>
+        <div class="muted small" id="rankingNote"></div>
+      </div>
       <div class="rank-list" id="rankList"></div>
     </section>
 
-    <!-- 4. 話題（記事） -->
+    <!-- 話題（FAQ/疑問） -->
     <section class="section" id="topics">
-      <h2 class="h2" id="topicsTitle">このジャンルでよくある疑問・話題</h2>
+      <div class="section-head">
+        <h2 class="h2" id="topicsTitle">このジャンルでよくある疑問・話題</h2>
+      </div>
       <div class="topics" id="topicsList"></div>
     </section>
 
-    <!-- 5. 他サイト導線 -->
+    <!-- 他サイト -->
     <section class="section" id="links">
-      <h2 class="h2" id="linksTitle">他ジャンルのおすすめ</h2>
+      <div class="section-head">
+        <h2 class="h2" id="linksTitle">他ジャンルのおすすめ</h2>
+        <div class="muted small">別サイトへの導線（テスト）</div>
+      </div>
       <div class="card">
         <ul class="links" id="linksList"></ul>
       </div>
     </section>
 
     <footer class="footer">
-      <div class="muted small" id="footerNote">
+      <div class="mini-muted" id="footerNote">
         価格・在庫・ポイントは変動します。購入前にリンク先で最新情報をご確認ください（テスト）。
       </div>
-      <div class="muted small">© <span id="year"></span> <span id="siteTitle2">ゲーミングマウスおすすめランキング（テスト）</span></div>
+      <div class="mini-muted">© <span id="year"></span> <span id="siteTitle2">ゲーミングマウスおすすめ（テスト）</span></div>
     </footer>
   </main>
 
