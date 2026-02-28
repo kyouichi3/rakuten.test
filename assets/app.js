@@ -39,7 +39,7 @@ function escapeHtml(s) {
   }[m]));
 }
 
-// 段落/箇条書きのみ
+// 段落/箇条書きのみ（安全のためHTMLは通さない）
 function renderMarkdownLines(lines) {
   const arr = Array.isArray(lines) ? lines : [String(lines ?? "")];
   const blocks = [];
@@ -92,7 +92,8 @@ function safeHref(url) {
 }
 
 function renderPickCards(ranking) {
-  el.pickCards.innerHTML = ranking.map(item => `
+  const top = ranking.slice(0, 3);
+  el.pickCards.innerHTML = top.map(item => `
     <article class="pick">
       <div class="pick-top">
         <span class="pill">#${escapeHtml(item.rank)}</span>
@@ -101,7 +102,7 @@ function renderPickCards(ranking) {
       <div class="pick-name">${escapeHtml(item.shortName || item.name || "")}</div>
       <div class="pick-desc">${escapeHtml(item.summary || "")}</div>
       <div class="pick-actions">
-        <a href="${escapeHtml(safeHref(item.buyUrl))}" target="_blank" rel="nofollow sponsored noopener">購入リンク（テスト）</a>
+        <a href="${escapeHtml(safeHref(item.buyUrl))}" target="_blank" rel="nofollow sponsored noopener">購入リンク（差し替え）</a>
         <span class="muted small">${escapeHtml(item.meta || "")}</span>
       </div>
     </article>
@@ -109,14 +110,13 @@ function renderPickCards(ranking) {
 }
 
 function renderCompareTable(ranking) {
-  // “違い”が分かるように、超簡易の軸だけ並べる
   const rows = ranking.map(item => `
     <tr>
       <td><b>#${escapeHtml(item.rank)}</b> ${escapeHtml(item.shortName || item.name || "")}</td>
-      <td>${escapeHtml(item.compare?.shape || "（ここに形状のメモ）")}</td>
-      <td>${escapeHtml(item.compare?.weight || "（ここに重量のメモ）")}</td>
-      <td>${escapeHtml(item.compare?.price || "（ここに価格帯のメモ）")}</td>
-      <td>${escapeHtml(item.compare?.forWho || "（どんな人向けか）")}</td>
+      <td>${escapeHtml(item.compare?.shape || "—")}</td>
+      <td>${escapeHtml(item.compare?.weight || "—")}</td>
+      <td>${escapeHtml(item.compare?.price || "—")}</td>
+      <td>${escapeHtml(item.compare?.forWho || "—")}</td>
     </tr>
   `).join("");
 
@@ -156,11 +156,11 @@ function renderRanking(list) {
 
     const specs = item.specs ?? {};
     const specRows = [
-      ["重量", specs.weight || "ここに重量（テスト）"],
-      ["形状", specs.shape || "ここに形状（テスト）"],
-      ["接続", specs.connection || "ここに接続（テスト）"],
-      ["センサー/遅延", specs.sensor || "ここにセンサー（テスト）"],
-      ["対象", specs.forWho || "ここに対象（テスト）"],
+      ["重量", specs.weight || "公式仕様参照（後から記入）"],
+      ["形状", specs.shape || "公式仕様参照（後から記入）"],
+      ["接続", specs.connection || "公式仕様参照（後から記入）"],
+      ["センサー/遅延", specs.sensor || "公式仕様参照（後から記入）"],
+      ["対象", specs.forWho || "後から記入"],
     ].map(([k,v]) => `
       <div class="row">
         <span class="k">${escapeHtml(k)}</span>
@@ -180,7 +180,7 @@ function renderRanking(list) {
       <div class="rank-body">
         <div class="thumb">
           ${img ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(item.name)}" loading="lazy">`
-               : "画像URLをここに（テスト）"}
+               : "画像は許諾素材のみ（後で）"}
         </div>
 
         <div class="rank-right">
@@ -190,11 +190,11 @@ function renderRanking(list) {
 
           <div class="two-col">
             <div class="box">
-              <div class="box-title">What we like（良い点）</div>
+              <div class="box-title">良い点（Pros）</div>
               <ul class="bullets pros">${pros.map(p => `<li>${escapeHtml(p)}</li>`).join("")}</ul>
             </div>
             <div class="box">
-              <div class="box-title">What we don’t like（注意点）</div>
+              <div class="box-title">注意点（Cons）</div>
               <ul class="bullets cons">${cons.map(p => `<li>${escapeHtml(p)}</li>`).join("")}</ul>
             </div>
           </div>
@@ -205,11 +205,11 @@ function renderRanking(list) {
 
           <div class="rank-actions">
             <a class="primary" href="${escapeHtml(safeHref(buyUrl))}" target="_blank" rel="nofollow sponsored noopener">
-              購入ページを見る（広告/テスト）
+              購入ページを見る（リンク差し替え）
             </a>
 
             ${detailUrl ? `
-              <a href="${escapeHtml(detailUrl)}" target="_blank" rel="noopener">詳細解説（テスト）</a>
+              <a href="${escapeHtml(detailUrl)}" target="_blank" rel="noopener">解説（任意）</a>
             ` : ""}
 
             <span class="meta">${escapeHtml(item.meta || "")}</span>
@@ -218,13 +218,13 @@ function renderRanking(list) {
       </div>
     `;
 
-    // buyUrlがメモ（httpsで始まらない）でも、とりあえず遷移はさせず事故防止
+    // buyUrlが未設定 or メモのまま（httpsで始まらない）→事故防止
     if (!buyUrl || !/^https?:\/\//i.test(buyUrl)) {
       const a = card.querySelector("a.primary");
       a.style.opacity = "0.65";
       a.addEventListener("click", (e) => {
         e.preventDefault();
-        alert("buyUrl はテスト用メモです。実運用では https:// のリンクを入れてください。");
+        alert("ここはリンク差し替え前（テスト）です。buyUrl に https:// のリンクを入れてください。");
       });
     }
 
@@ -284,7 +284,6 @@ async function init() {
   el.rankingNote.textContent = data.sections?.rankingNote ?? "";
   const ranking = Array.isArray(data.ranking) ? data.ranking : [];
 
-  // new blocks
   renderPickCards(ranking);
   renderCompareTable(ranking);
   renderRanking(ranking);
