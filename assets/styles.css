@@ -8,6 +8,9 @@
   --accentSoft:#eff6ff;
   --shadow:0 6px 18px rgba(0,0,0,.06);
   --radius:16px;
+
+  --amazon:#ff9900;
+  --rakuten:#bf0000;
 }
 
 *{box-sizing:border-box}
@@ -161,9 +164,34 @@ a:hover{text-decoration:underline}
 }
 .pick-name{font-weight:900}
 .pick-desc{color:var(--muted); font-size:13px; line-height:1.7}
-.pick-actions{display:flex; gap:10px; align-items:center; margin-top:auto}
-.pick-actions a{font-weight:900; color:var(--accent)}
-.pick-actions a:hover{text-decoration:underline}
+.pick-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin-top:auto;
+}
+.pick-actions .mini-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  font-weight:900;
+  font-size:12px;
+  background:#fff;
+}
+.pick-actions .mini-btn.amazon{
+  background:var(--amazon);
+  border-color:transparent;
+  color:#111;
+}
+.pick-actions .mini-btn.rakuten{
+  background:var(--rakuten);
+  border-color:transparent;
+  color:#fff;
+}
 
 /* Compare table */
 .table-wrap{
@@ -271,21 +299,36 @@ th{background:#fafafa; font-weight:900}
 .specs .k{color:var(--muted)}
 .specs .v{font-weight:800}
 
+/* Amazon / Rakuten buttons */
 .rank-actions{
-  display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
   margin-top:12px;
 }
 .rank-actions a{
-  display:inline-flex; align-items:center; justify-content:center;
-  padding:10px 12px; border-radius:12px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 14px;
+  border-radius:12px;
   border:1px solid var(--line);
   background:#fff;
   font-weight:900;
+  font-size:13px;
 }
-.rank-actions a.primary{
-  background:var(--accent);
-  color:#fff;
+.rank-actions a:hover{opacity:.92; text-decoration:none}
+
+.rank-actions a.amazon{
+  background:var(--amazon);
   border-color:transparent;
+  color:#111;
+}
+.rank-actions a.rakuten{
+  background:var(--rakuten);
+  border-color:transparent;
+  color:#fff;
 }
 .rank-actions .meta{
   margin-left:auto;
