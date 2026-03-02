@@ -83,30 +83,50 @@ function buildTOC() {
     { id: "topics", label: "よくある疑問・話題" },
     { id: "links", label: "他ジャンルのおすすめ" }
   ];
-  el.tocList.innerHTML = items.map(x => `<li><a href="#${x.id}">${escapeHtml(x.label)}</a></li>`).join("");
+  el.tocList.innerHTML = items
+    .map(x => `<li><a href="#${x.id}">${escapeHtml(x.label)}</a></li>`)
+    .join("");
 }
 
-function safeHref(url) {
-  const u = String(url ?? "").trim();
-  return u ? u : "#";
+function safeUrl(u) {
+  const s = String(u ?? "").trim();
+  if (!s) return null;
+  // ユーザー提供の短縮URLも含め、http(s)のみ許可
+  if (!/^https?:\/\//i.test(s)) return null;
+  return s;
+}
+
+function relForAffiliate() {
+  // nofollow + sponsored はアフィリエイトリンクの一般的な指定
+  return "nofollow sponsored noopener";
 }
 
 function renderPickCards(ranking) {
   const top = ranking.slice(0, 3);
-  el.pickCards.innerHTML = top.map(item => `
-    <article class="pick">
-      <div class="pick-top">
-        <span class="pill">#${escapeHtml(item.rank)}</span>
-        <a class="pill" href="#rank-${escapeHtml(item.rank)}" style="text-decoration:none">詳細へ</a>
-      </div>
-      <div class="pick-name">${escapeHtml(item.shortName || item.name || "")}</div>
-      <div class="pick-desc">${escapeHtml(item.summary || "")}</div>
-      <div class="pick-actions">
-        <a href="${escapeHtml(safeHref(item.buyUrl))}" target="_blank" rel="nofollow sponsored noopener">購入リンク（差し替え）</a>
-        <span class="muted small">${escapeHtml(item.meta || "")}</span>
-      </div>
-    </article>
-  `).join("");
+
+  el.pickCards.innerHTML = top.map(item => {
+    const amazon = safeUrl(item.links?.amazon);
+    const rakuten = safeUrl(item.links?.rakuten);
+
+    const buttons = `
+      ${amazon ? `<a class="mini-btn amazon" href="${escapeHtml(amazon)}" target="_blank" rel="${relForAffiliate()}">Amazon</a>` : ""}
+      ${rakuten ? `<a class="mini-btn rakuten" href="${escapeHtml(rakuten)}" target="_blank" rel="${relForAffiliate()}">楽天</a>` : ""}
+    `;
+
+    return `
+      <article class="pick">
+        <div class="pick-top">
+          <span class="pill">#${escapeHtml(item.rank)}</span>
+          <a class="pill" href="#rank-${escapeHtml(item.rank)}" style="text-decoration:none">詳細へ</a>
+        </div>
+        <div class="pick-name">${escapeHtml(item.shortName || item.name || "")}</div>
+        <div class="pick-desc">${escapeHtml(item.summary || "")}</div>
+        <div class="pick-actions">
+          ${buttons || `<span class="muted small">リンク未設定</span>`}
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 function renderCompareTable(ranking) {
@@ -138,17 +158,16 @@ function renderCompareTable(ranking) {
 
 function renderRanking(list) {
   el.rankList.innerHTML = "";
+
   for (const item of list) {
     const rank = Number(item.rank);
     const id = `rank-${Number.isFinite(rank) ? rank : String(item.rank)}`;
 
-    const card = document.createElement("article");
-    card.className = "rank";
-    card.id = id;
+    const amazon = safeUrl(item.links?.amazon);
+    const rakuten = safeUrl(item.links?.rakuten);
 
-    const img = item.imageUrl ?? "";
-    const buyUrl = String(item.buyUrl ?? "").trim();
-    const detailUrl = String(item.detailUrl ?? "").trim();
+    const img = item.imageUrl ?? ""; // 画像は許諾素材のみ推奨
+    const detailUrl = safeUrl(item.detailUrl);
 
     const points = Array.isArray(item.points) ? item.points : [];
     const pros = Array.isArray(item.pros) ? item.pros : [];
@@ -156,17 +175,34 @@ function renderRanking(list) {
 
     const specs = item.specs ?? {};
     const specRows = [
-      ["重量", specs.weight || "公式仕様参照（後から記入）"],
-      ["形状", specs.shape || "公式仕様参照（後から記入）"],
-      ["接続", specs.connection || "公式仕様参照（後から記入）"],
-      ["センサー/遅延", specs.sensor || "公式仕様参照（後から記入）"],
-      ["対象", specs.forWho || "後から記入"],
+      ["重量", specs.weight || "公式仕様参照"],
+      ["形状", specs.shape || "公式仕様参照"],
+      ["接続", specs.connection || "公式仕様参照"],
+      ["センサー/遅延", specs.sensor || "公式仕様参照"],
+      ["対象", specs.forWho || "—"],
     ].map(([k,v]) => `
       <div class="row">
         <span class="k">${escapeHtml(k)}</span>
         <span class="v">${escapeHtml(v)}</span>
       </div>
     `).join("");
+
+    const buttons = `
+      ${amazon ? `
+        <a class="amazon" href="${escapeHtml(amazon)}" target="_blank" rel="${relForAffiliate()}">
+          Amazonで見る
+        </a>
+      ` : ""}
+      ${rakuten ? `
+        <a class="rakuten" href="${escapeHtml(rakuten)}" target="_blank" rel="${relForAffiliate()}">
+          楽天で見る
+        </a>
+      ` : ""}
+    `;
+
+    const card = document.createElement("article");
+    card.className = "rank";
+    card.id = id;
 
     card.innerHTML = `
       <div class="rank-head">
@@ -179,8 +215,9 @@ function renderRanking(list) {
 
       <div class="rank-body">
         <div class="thumb">
-          ${img ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(item.name)}" loading="lazy">`
-               : "画像は許諾素材のみ（後で）"}
+          ${img
+            ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(item.name)}" loading="lazy">`
+            : "画像（任意）"}
         </div>
 
         <div class="rank-right">
@@ -190,11 +227,11 @@ function renderRanking(list) {
 
           <div class="two-col">
             <div class="box">
-              <div class="box-title">良い点（Pros）</div>
+              <div class="box-title">良い点</div>
               <ul class="bullets pros">${pros.map(p => `<li>${escapeHtml(p)}</li>`).join("")}</ul>
             </div>
             <div class="box">
-              <div class="box-title">注意点（Cons）</div>
+              <div class="box-title">注意点</div>
               <ul class="bullets cons">${cons.map(p => `<li>${escapeHtml(p)}</li>`).join("")}</ul>
             </div>
           </div>
@@ -204,29 +241,13 @@ function renderRanking(list) {
           </div>
 
           <div class="rank-actions">
-            <a class="primary" href="${escapeHtml(safeHref(buyUrl))}" target="_blank" rel="nofollow sponsored noopener">
-              購入ページを見る（リンク差し替え）
-            </a>
-
-            ${detailUrl ? `
-              <a href="${escapeHtml(detailUrl)}" target="_blank" rel="noopener">解説（任意）</a>
-            ` : ""}
-
+            ${buttons || `<span class="muted small">リンク未設定</span>`}
+            ${detailUrl ? `<a href="${escapeHtml(detailUrl)}" target="_blank" rel="noopener">解説</a>` : ""}
             <span class="meta">${escapeHtml(item.meta || "")}</span>
           </div>
         </div>
       </div>
     `;
-
-    // buyUrlが未設定 or メモのまま（httpsで始まらない）→事故防止
-    if (!buyUrl || !/^https?:\/\//i.test(buyUrl)) {
-      const a = card.querySelector("a.primary");
-      a.style.opacity = "0.65";
-      a.addEventListener("click", (e) => {
-        e.preventDefault();
-        alert("ここはリンク差し替え前（テスト）です。buyUrl に https:// のリンクを入れてください。");
-      });
-    }
 
     el.rankList.appendChild(card);
   }
@@ -248,7 +269,7 @@ function renderLinks(otherSites) {
   el.linksTitle.textContent = otherSites?.title ?? "他サイト";
   const links = Array.isArray(otherSites?.links) ? otherSites.links : [];
   el.linksList.innerHTML = links.map(l => `
-    <li><a href="${escapeHtml(safeHref(l.url))}" target="_blank" rel="noopener">${escapeHtml(l.label ?? "")}</a></li>
+    <li><a href="${escapeHtml(safeUrl(l.url) || "#")}" target="_blank" rel="noopener">${escapeHtml(l.label ?? "")}</a></li>
   `).join("");
 }
 
@@ -266,6 +287,7 @@ async function init() {
   const site = data.site ?? {};
   const title = site.title ?? "おすすめランキング";
   document.title = title;
+
   el.siteTitle.textContent = title;
   el.siteTitle2.textContent = title;
   el.siteSubtitle.textContent = site.subtitle ?? "";
